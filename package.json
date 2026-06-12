@@ -1,0 +1,25 @@
+{
+  "name": "interior-design",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI room styling MVP architecture for shoppable, editable room designs.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm --workspace @interior/domain run build && npm --workspace @interior/catalog run build && npm --workspace @interior/recommendation run build && npm --workspace @interior/api run build && npm --workspace @interior/web run build",
+    "test": "npm --workspace @interior/domain run test",
+    "check": "npm run build && npm run test",
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm --workspace @interior/api run dev",
+    "dev:web": "npm --workspace @interior/web run dev"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
