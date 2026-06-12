@@ -21,6 +21,7 @@ The product vision is bigger than this, but the first build should prove that us
 - `packages/recommendation`: deterministic design-card pipeline that AI can augment later.
 - `docs`: plan review, architecture, API contracts, and MVP roadmap.
 - `infra`: local service placeholders for the future database/cache/object store.
+- Editable 2D MVP controls: drag, nudge, rotate, duplicate, delete, swap, save, and share.
 
 ## Quick Start
 
@@ -51,4 +52,3 @@ See [Plan Review](docs/PLAN_REVIEW.md), [Architecture](docs/ARCHITECTURE.md), an
 ## Key Rule
 
 AI may suggest intent, explain taste, and generate visual previews. It should not invent product links, product dimensions, prices, or availability.
-

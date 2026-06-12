@@ -60,13 +60,15 @@ flowchart LR
 6. Geometry rules reject or penalize bad layouts.
 7. API returns design cards, product references, scores, and warnings.
 8. Web app renders cards and a 2D floor plan.
-9. Later, AI adapters add photo analysis and rendered previews without bypassing validation.
+9. User edits the 2D layout; the API revalidates the edited placements.
+10. Later, AI adapters add photo analysis and rendered previews without bypassing validation.
 
 ## Core Data Objects
 
 - `Room`: dimensions, room type, windows, doors, obstructions, and existing furniture.
 - `CatalogProduct`: verified product data with dimensions, price, URL, tags, and confidence scores.
 - `DesignCard`: a complete concept with selected products, positions, scores, warnings, palette, and explanation.
+- `productAlternatives`: item-level product IDs that can replace a selected product without letting AI invent shopping data.
 - `LayoutWarning`: machine-readable issue for collisions, door blockage, low dimension confidence, budget miss, or missing essentials.
 
 ## AI Boundary
@@ -117,4 +119,3 @@ Room photos and scans can expose homes, possessions, addresses, and habits. Prod
 - short retention for raw photos
 - separate derived room geometry when possible
 - audit trail for external AI processing
-

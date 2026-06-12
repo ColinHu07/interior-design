@@ -132,6 +132,7 @@ export const designCardSchema = z.object({
   summary: z.string().min(1),
   palette: z.array(z.string()).min(3),
   items: z.array(layoutItemSchema),
+  productAlternatives: z.record(z.array(z.string())).default({}),
   totalPriceCents: z.number().int().nonnegative(),
   fitScore: z.number().min(0).max(1),
   budgetScore: z.number().min(0).max(1),
@@ -152,4 +153,3 @@ export type Placement = z.infer<typeof placementSchema>;
 export type LayoutItem = z.infer<typeof layoutItemSchema>;
 export type LayoutWarning = z.infer<typeof layoutWarningSchema>;
 export type DesignCard = z.infer<typeof designCardSchema>;
-

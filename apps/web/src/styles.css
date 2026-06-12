@@ -133,8 +133,12 @@ h3 {
 
 .segmented {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px;
+}
+
+.style-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .segmented button {
@@ -160,6 +164,41 @@ h3 {
   border: 0;
   background: #d85f47;
   color: #ffffff;
+  font-weight: 800;
+}
+
+.save-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.save-actions button,
+.tool-row button,
+.nudge-grid button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  border: 1px solid #cbd3cc;
+  background: #ffffff;
+  color: #33413a;
+  font-weight: 800;
+}
+
+.save-actions button:disabled,
+.tool-row button:disabled,
+.nudge-grid button:disabled,
+.swap-select select:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.save-status {
+  margin: 10px 0 0;
+  color: #254d34;
   font-weight: 800;
 }
 
@@ -294,6 +333,19 @@ meter {
   stroke-width: 1.4;
 }
 
+.draggable-item {
+  cursor: grab;
+}
+
+.draggable-item:active {
+  cursor: grabbing;
+}
+
+.selected-item {
+  stroke: #d85f47;
+  stroke-width: 3;
+}
+
 .item-bed_frame,
 .item-nightstand,
 .item-dresser {
@@ -329,6 +381,67 @@ meter {
   display: grid;
   gap: 8px;
   margin-top: 12px;
+}
+
+.sandbox-tools {
+  display: grid;
+  gap: 10px;
+  border: 1px solid #dce2dd;
+  padding: 10px;
+  background: #fbfcfb;
+}
+
+.selected-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 26px;
+  color: #33413a;
+}
+
+.tool-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.nudge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.swap-select {
+  display: grid;
+  gap: 5px;
+  color: #4c5751;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.swap-select select {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #cbd3cc;
+  background: #ffffff;
+  color: #202327;
+  padding: 7px 9px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #dce2dd;
+  padding: 10px;
+  color: #1f2924;
+  background: #edf5f0;
+}
+
+.total-row em {
+  color: #b24e3a;
+  font-style: normal;
+  font-weight: 900;
 }
 
 .product-row {
@@ -369,6 +482,12 @@ meter {
   display: grid;
   gap: 8px;
   margin-top: 14px;
+}
+
+.score-summary {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .warning-box {
@@ -442,4 +561,3 @@ meter {
     grid-template-columns: 1fr;
   }
 }
-

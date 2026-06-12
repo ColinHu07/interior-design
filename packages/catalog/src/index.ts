@@ -14,6 +14,21 @@ export interface ProductSearchFilters {
 
 export { seedProducts };
 
+export function alternativesForProduct(
+  product: CatalogProduct,
+  filters: Omit<ProductSearchFilters, "category"> = {},
+  products: CatalogProduct[] = seedProducts
+): CatalogProduct[] {
+  return findProducts(
+    {
+      ...filters,
+      category: product.category,
+      requireVerifiedDimensions: filters.requireVerifiedDimensions ?? true
+    },
+    products
+  ).filter((candidate) => candidate.id !== product.id);
+}
+
 export function findProducts(
   filters: ProductSearchFilters,
   products: CatalogProduct[] = seedProducts
@@ -89,4 +104,3 @@ function scoreProduct(product: CatalogProduct, filters: ProductSearchFilters): n
 
   return score;
 }
-

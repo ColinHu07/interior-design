@@ -8,10 +8,11 @@ Included in this repo:
 
 - shared schemas for rooms, products, placements, and design cards
 - geometry validation for furniture fit
-- seed product catalog
+- seed product catalog with swap alternatives
 - deterministic design-card generator
 - API endpoints
 - web prototype for the core loop
+- editable 2D floor plan sandbox
 
 ## Phase 1: Validation Prototype
 
@@ -22,11 +23,12 @@ Scope:
 - bedrooms or home offices only
 - manual room dimensions
 - 3 to 5 style packs
-- curated catalog of 100 to 300 products
+- curated/demo catalog that can be replaced by official feeds
 - 3 generated design cards per room
 - product alternatives
 - 2D floor plan preview
 - save/share design links
+- drag, rotate, duplicate, delete, and swap item controls
 
 Success metrics:
 
@@ -98,4 +100,3 @@ Scope:
 - designer review upsells
 - retailer partnerships
 - checkout/cart integrations
-

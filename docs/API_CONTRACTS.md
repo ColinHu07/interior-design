@@ -65,3 +65,29 @@ Response:
 
 Validation errors return `400` with a schema error payload.
 
+Each returned card includes `productAlternatives`, a map from layout item ID to product IDs that can be swapped into the same placement category.
+
+## `POST /api/validate-layout`
+
+Validates an edited layout against the same deterministic geometry rules used during generation.
+
+Request:
+
+```json
+{
+  "room": {},
+  "items": [],
+  "productIds": ["bed_walnut_platform", "rug_wool_neutral_8x10"]
+}
+```
+
+Response:
+
+```json
+{
+  "fitScore": 0.92,
+  "warnings": []
+}
+```
+
+The web sandbox calls this after edits so drag, rotate, duplicate, delete, and swap actions still produce trustworthy fit warnings.

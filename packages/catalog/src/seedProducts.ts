@@ -1,6 +1,6 @@
 import type { CatalogProduct } from "@interior/domain";
 
-export const seedProducts: CatalogProduct[] = [
+const curatedProducts: CatalogProduct[] = [
   {
     id: "bed_walnut_platform",
     name: "Walnut Platform Bed",
@@ -91,7 +91,7 @@ export const seedProducts: CatalogProduct[] = [
     materials: ["wool", "cotton backing"],
     colors: ["ivory", "sand", "charcoal"],
     styleTags: ["cozy-neutral", "japandi-calm", "warm-modern"],
-    roomTags: ["bedroom", "living_room"],
+    roomTags: ["bedroom", "living_room", "home_office"],
     availability: "in_stock",
     shippingDaysEstimate: 6,
     dimensionConfidence: 0.99
@@ -110,7 +110,7 @@ export const seedProducts: CatalogProduct[] = [
     materials: ["cotton", "polyester"],
     colors: ["black", "white", "gray"],
     styleTags: ["modern-contrast", "budget-refresh"],
-    roomTags: ["bedroom", "living_room", "dorm_room"],
+    roomTags: ["bedroom", "living_room", "home_office", "dorm_room"],
     availability: "in_stock",
     shippingDaysEstimate: 4,
     dimensionConfidence: 0.98
@@ -285,6 +285,190 @@ export const seedProducts: CatalogProduct[] = [
     availability: "in_stock",
     shippingDaysEstimate: 5,
     dimensionConfidence: 0.88
+  },
+  {
+    id: "desk_oak_compact",
+    name: "Compact Oak Writing Desk",
+    category: "desk",
+    retailerId: "demo_office",
+    retailerName: "Demo Office",
+    source: "demo",
+    priceCents: 32900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/compact-oak-writing-desk",
+    dimensions: { widthIn: 48, depthIn: 24, heightIn: 30 },
+    materials: ["oak veneer", "steel"],
+    colors: ["oak", "black"],
+    styleTags: ["japandi-calm", "cozy-neutral", "warm-modern"],
+    roomTags: ["home_office", "bedroom", "dorm_room"],
+    availability: "in_stock",
+    shippingDaysEstimate: 5,
+    dimensionConfidence: 0.95
+  },
+  {
+    id: "desk_white_minimal",
+    name: "Minimal White Desk",
+    category: "desk",
+    retailerId: "demo_office",
+    retailerName: "Demo Office",
+    source: "demo",
+    priceCents: 21900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/minimal-white-desk",
+    dimensions: { widthIn: 42, depthIn: 22, heightIn: 30 },
+    materials: ["painted wood composite"],
+    colors: ["white"],
+    styleTags: ["budget-refresh", "modern-contrast", "cozy-neutral"],
+    roomTags: ["home_office", "dorm_room"],
+    availability: "in_stock",
+    shippingDaysEstimate: 4,
+    dimensionConfidence: 0.93
+  },
+  {
+    id: "chair_walnut_task",
+    name: "Walnut Task Chair",
+    category: "chair",
+    retailerId: "demo_office",
+    retailerName: "Demo Office",
+    source: "demo",
+    priceCents: 17900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/walnut-task-chair",
+    dimensions: { widthIn: 24, depthIn: 24, heightIn: 34 },
+    materials: ["walnut veneer", "woven seat"],
+    colors: ["walnut", "natural"],
+    styleTags: ["japandi-calm", "cozy-neutral", "warm-modern"],
+    roomTags: ["home_office", "bedroom"],
+    availability: "in_stock",
+    shippingDaysEstimate: 5,
+    dimensionConfidence: 0.91
+  },
+  {
+    id: "chair_black_ergonomic",
+    name: "Black Ergonomic Chair",
+    category: "chair",
+    retailerId: "demo_office",
+    retailerName: "Demo Office",
+    source: "demo",
+    priceCents: 23900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/black-ergonomic-chair",
+    dimensions: { widthIn: 26, depthIn: 26, heightIn: 42 },
+    materials: ["mesh", "steel"],
+    colors: ["black"],
+    styleTags: ["modern-contrast", "budget-refresh"],
+    roomTags: ["home_office", "dorm_room"],
+    availability: "in_stock",
+    shippingDaysEstimate: 3,
+    dimensionConfidence: 0.94
+  },
+  {
+    id: "storage_low_oak",
+    name: "Low Oak Storage Cabinet",
+    category: "storage",
+    retailerId: "demo_office",
+    retailerName: "Demo Office",
+    source: "demo",
+    priceCents: 27900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/low-oak-storage-cabinet",
+    dimensions: { widthIn: 36, depthIn: 16, heightIn: 30 },
+    materials: ["oak veneer"],
+    colors: ["oak"],
+    styleTags: ["japandi-calm", "cozy-neutral", "warm-modern"],
+    roomTags: ["home_office", "bedroom"],
+    availability: "in_stock",
+    shippingDaysEstimate: 7,
+    dimensionConfidence: 0.93
+  },
+  {
+    id: "storage_black_file",
+    name: "Black File Cabinet",
+    category: "storage",
+    retailerId: "demo_office",
+    retailerName: "Demo Office",
+    source: "demo",
+    priceCents: 15900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/black-file-cabinet",
+    dimensions: { widthIn: 18, depthIn: 20, heightIn: 28 },
+    materials: ["powder-coated steel"],
+    colors: ["black"],
+    styleTags: ["modern-contrast", "budget-refresh"],
+    roomTags: ["home_office", "dorm_room"],
+    availability: "in_stock",
+    shippingDaysEstimate: 4,
+    dimensionConfidence: 0.94
+  },
+  {
+    id: "mirror_arch_oak",
+    name: "Oak Arch Mirror",
+    category: "mirror",
+    retailerId: "demo_art",
+    retailerName: "Demo Art",
+    source: "demo",
+    priceCents: 14900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/oak-arch-mirror",
+    dimensions: { widthIn: 30, depthIn: 2, heightIn: 48 },
+    materials: ["glass", "oak frame"],
+    colors: ["oak", "clear"],
+    styleTags: ["japandi-calm", "cozy-neutral", "warm-modern"],
+    roomTags: ["bedroom", "home_office", "living_room"],
+    availability: "in_stock",
+    shippingDaysEstimate: 6,
+    dimensionConfidence: 0.92
+  },
+  {
+    id: "mirror_black_round",
+    name: "Round Black Mirror",
+    category: "mirror",
+    retailerId: "demo_art",
+    retailerName: "Demo Art",
+    source: "demo",
+    priceCents: 9900,
+    currency: "USD",
+    purchaseUrl: "https://example.com/products/round-black-mirror",
+    dimensions: { widthIn: 32, depthIn: 2, heightIn: 32 },
+    materials: ["glass", "steel frame"],
+    colors: ["black"],
+    styleTags: ["modern-contrast", "budget-refresh"],
+    roomTags: ["bedroom", "home_office", "living_room"],
+    availability: "in_stock",
+    shippingDaysEstimate: 5,
+    dimensionConfidence: 0.91
   }
 ];
 
+const variantPalettes = [
+  { suffix: "Natural", priceDelta: 0, colors: ["natural", "ivory"], styles: ["cozy-neutral", "japandi-calm"] },
+  { suffix: "Charcoal", priceDelta: 1200, colors: ["charcoal", "black"], styles: ["modern-contrast"] },
+  { suffix: "Studio", priceDelta: -1800, colors: ["white", "gray"], styles: ["budget-refresh", "modern-contrast"] }
+];
+
+function createVariants(product: CatalogProduct): CatalogProduct[] {
+  if (["curtains", "wall_art", "plant"].includes(product.category)) {
+    return [];
+  }
+
+  return variantPalettes.map((variant, index) => ({
+    ...product,
+    id: `${product.id}_variant_${index + 1}`,
+    name: `${product.name} ${variant.suffix}`,
+    priceCents: Math.max(4900, product.priceCents + variant.priceDelta),
+    purchaseUrl: `${product.purchaseUrl}-${variant.suffix.toLowerCase()}`,
+    colors: variant.colors,
+    styleTags: Array.from(new Set([...product.styleTags, ...variant.styles])),
+    dimensions: {
+      widthIn: product.dimensions.widthIn + (index === 1 ? 2 : 0),
+      depthIn: product.dimensions.depthIn + (index === 2 ? -1 : 0),
+      heightIn: product.dimensions.heightIn
+    },
+    dimensionConfidence: Math.max(0.86, product.dimensionConfidence - 0.02)
+  }));
+}
+
+export const seedProducts: CatalogProduct[] = [
+  ...curatedProducts,
+  ...curatedProducts.flatMap((product) => createVariants(product))
+];

@@ -1,4 +1,4 @@
-import { findProducts, seedProducts } from "@interior/catalog";
+import { alternativesForProduct, findProducts, seedProducts } from "@interior/catalog";
 import {
   designCardSchema,
   preferencesSchema,
@@ -81,6 +81,13 @@ export function generateDesignCards(rawInput: Partial<GenerateDesignCardsInput> 
     .map((card) => designCardSchema.parse(card));
 
   const productIds = new Set(cards.flatMap((card) => card.items.map((item) => item.productId)));
+  for (const card of cards) {
+    for (const alternatives of Object.values(card.productAlternatives)) {
+      for (const productId of alternatives) {
+        productIds.add(productId);
+      }
+    }
+  }
 
   return {
     room,
@@ -105,15 +112,20 @@ function buildCard(room: Room, preferences: Preferences, concept: DesignConcept)
   const selectedProducts = selectProducts(room, preferences, concept);
   const missingWarnings = selectedProducts.warnings;
 
-  if (!selectedProducts.bed || !selectedProducts.rug || !selectedProducts.nightstand) {
+  if (room.type === "bedroom" && (!selectedProducts.bed || !selectedProducts.rug || !selectedProducts.nightstand)) {
     return undefined;
   }
 
-  const items = createBedroomLayout(room, selectedProducts);
+  if (room.type === "home_office" && (!selectedProducts.desk || !selectedProducts.chair || !selectedProducts.rug)) {
+    return undefined;
+  }
+
+  const items = room.type === "home_office" ? createOfficeLayout(room, selectedProducts) : createBedroomLayout(room, selectedProducts);
   const totalPriceCents = totalForItems(items, selectedProducts.products);
   const validation = validateLayout({ room, items, products: selectedProducts.products });
   const warnings: LayoutWarning[] = [...missingWarnings, ...validation.warnings];
   const budgetScore = scoreBudget(totalPriceCents, preferences.budgetCents);
+  const productAlternatives = alternativesForItems(room, preferences, items, selectedProducts.products);
 
   if (budgetScore < 1) {
     warnings.push({
@@ -132,6 +144,7 @@ function buildCard(room: Room, preferences: Preferences, concept: DesignConcept)
     summary: concept.summary,
     palette: concept.palette,
     items,
+    productAlternatives,
     totalPriceCents,
     fitScore: validation.fitScore,
     budgetScore,
@@ -145,6 +158,10 @@ interface SelectedProducts {
   nightstand?: CatalogProduct;
   rug?: CatalogProduct;
   dresser?: CatalogProduct;
+  desk?: CatalogProduct;
+  chair?: CatalogProduct;
+  storage?: CatalogProduct;
+  mirror?: CatalogProduct;
   lamp?: CatalogProduct;
   curtains?: CatalogProduct;
   wallArt?: CatalogProduct;
@@ -158,15 +175,22 @@ function selectProducts(room: Room, preferences: Preferences, concept: DesignCon
   const warnings: LayoutWarning[] = [];
 
   const pick = (category: ProductCategory, budgetShare: number, maxWidthIn?: number, maxDepthIn?: number) => {
-    const product = findProducts(
+    const filters = {
+      category,
+      roomType: room.type,
+      styleIds: [concept.styleId],
+      retailerIds: preferences.retailerIds,
+      maxWidthIn,
+      maxDepthIn,
+      maxPriceCents: Math.round(preferences.budgetCents * budgetShare),
+      requireVerifiedDimensions: true
+    };
+    const product = findProducts(filters, seedProducts)[0] ?? findProducts(
       {
-        category,
-        roomType: room.type,
-        styleIds: [concept.styleId],
-        retailerIds: preferences.retailerIds,
+        ...filters,
         maxWidthIn,
         maxDepthIn,
-        maxPriceCents: Math.round(preferences.budgetCents * budgetShare),
+        maxPriceCents: undefined,
         requireVerifiedDimensions: true
       },
       seedProducts
@@ -187,19 +211,26 @@ function selectProducts(room: Room, preferences: Preferences, concept: DesignCon
     return undefined;
   };
 
-  const selected: SelectedProducts = {
-    bed: pick("bed_frame", 0.42, room.dimensions.widthIn - 24, room.dimensions.depthIn - 48),
-    nightstand: pick("nightstand", 0.12, 26, 24),
-    rug: pick("rug", 0.25, room.dimensions.widthIn - 24, room.dimensions.depthIn - 24),
-    lamp: pick("lamp", 0.08, 18, 18),
-    curtains: pick("curtains", 0.12, room.dimensions.widthIn, 4),
-    wallArt: pick("wall_art", 0.12, room.dimensions.widthIn - 24, 4),
-    products: picked,
-    warnings
-  };
+  const selected: SelectedProducts = { products: picked, warnings };
 
-  maybePickOptional(selected, "dresser", room, preferences, concept, 0.35, room.dimensions.widthIn - 24, 24);
-  maybePickOptional(selected, "plant", room, preferences, concept, 0.12, 30, 30);
+  if (room.type === "home_office") {
+    selected.desk = pick("desk", 0.34, room.dimensions.widthIn - 24, 32);
+    selected.chair = pick("chair", 0.18, 34, 34);
+    selected.rug = pick("rug", 0.22, room.dimensions.widthIn - 24, room.dimensions.depthIn - 24);
+    selected.lamp = pick("lamp", 0.1, 18, 18);
+    selected.wallArt = pick("wall_art", 0.12, room.dimensions.widthIn - 24, 4);
+    maybePickOptional(selected, "storage", room, preferences, concept, 0.22, room.dimensions.widthIn - 24, 24);
+    maybePickOptional(selected, "plant", room, preferences, concept, 0.12, 30, 30);
+  } else {
+    selected.bed = pick("bed_frame", 0.42, room.dimensions.widthIn - 24, room.dimensions.depthIn - 48);
+    selected.nightstand = pick("nightstand", 0.12, 26, 24);
+    selected.rug = pick("rug", 0.25, room.dimensions.widthIn - 24, room.dimensions.depthIn - 24);
+    selected.lamp = pick("lamp", 0.08, 18, 18);
+    selected.curtains = pick("curtains", 0.12, room.dimensions.widthIn, 4);
+    selected.wallArt = pick("wall_art", 0.12, room.dimensions.widthIn - 24, 4);
+    maybePickOptional(selected, "dresser", room, preferences, concept, 0.35, room.dimensions.widthIn - 24, 24);
+    maybePickOptional(selected, "plant", room, preferences, concept, 0.12, 30, 30);
+  }
 
   selected.products = Array.from(new Map(picked.map((product) => [product.id, product])).values());
   return selected;
@@ -243,6 +274,10 @@ function maybePickOptional(
 
   if (category === "dresser") {
     selected.dresser = product;
+  }
+
+  if (category === "storage") {
+    selected.storage = product;
   }
 
   if (category === "plant") {
@@ -356,9 +391,120 @@ function createBedroomLayout(room: Room, selected: SelectedProducts): LayoutItem
   return items;
 }
 
+function createOfficeLayout(room: Room, selected: SelectedProducts): LayoutItem[] {
+  const items: LayoutItem[] = [];
+  const desk = selected.desk;
+  const chair = selected.chair;
+  const rug = selected.rug;
+
+  if (!desk || !chair || !rug) {
+    return items;
+  }
+
+  const deskX = room.dimensions.widthIn / 2;
+  const deskY = 18 + desk.dimensions.depthIn / 2;
+
+  items.push({
+    id: "desk",
+    productId: desk.id,
+    placement: { xIn: deskX, yIn: deskY, rotationDeg: 0 },
+    locked: false
+  });
+
+  items.push({
+    id: "chair",
+    productId: chair.id,
+    placement: { xIn: deskX, yIn: deskY + desk.dimensions.depthIn / 2 + chair.dimensions.depthIn / 2 + 8, rotationDeg: 0 },
+    locked: false
+  });
+
+  items.push({
+    id: "rug",
+    productId: rug.id,
+    placement: { xIn: deskX, yIn: room.dimensions.depthIn / 2 + 12, rotationDeg: 0 },
+    locked: false
+  });
+
+  if (selected.lamp) {
+    items.push({
+      id: "lamp",
+      productId: selected.lamp.id,
+      placement: { xIn: deskX - desk.dimensions.widthIn / 2 + 10, yIn: deskY, rotationDeg: 0 },
+      locked: false
+    });
+  }
+
+  if (selected.wallArt) {
+    items.push({
+      id: "wall_art",
+      productId: selected.wallArt.id,
+      placement: { xIn: room.dimensions.widthIn / 2, yIn: 8, rotationDeg: 0 },
+      locked: false
+    });
+  }
+
+  if (selected.storage) {
+    items.push({
+      id: "storage",
+      productId: selected.storage.id,
+      placement: {
+        xIn: selected.storage.dimensions.widthIn / 2 + 14,
+        yIn: room.dimensions.depthIn - selected.storage.dimensions.depthIn / 2 - 14,
+        rotationDeg: 0
+      },
+      locked: false
+    });
+  }
+
+  if (selected.plant) {
+    items.push({
+      id: "plant",
+      productId: selected.plant.id,
+      placement: {
+        xIn: 18,
+        yIn: room.dimensions.depthIn - selected.plant.dimensions.depthIn / 2 - 12,
+        rotationDeg: 0
+      },
+      locked: false
+    });
+  }
+
+  return items;
+}
+
+function alternativesForItems(
+  room: Room,
+  preferences: Preferences,
+  items: LayoutItem[],
+  products: CatalogProduct[]
+): Record<string, string[]> {
+  const productById = new Map(products.map((product) => [product.id, product]));
+  const alternatives: Record<string, string[]> = {};
+
+  for (const item of items) {
+    const product = productById.get(item.productId);
+
+    if (!product) {
+      continue;
+    }
+
+    alternatives[item.id] = alternativesForProduct(product, {
+      roomType: room.type,
+      styleIds: preferences.styleIds,
+      retailerIds: preferences.retailerIds,
+      maxWidthIn: room.dimensions.widthIn,
+      maxDepthIn: room.dimensions.depthIn,
+      requireVerifiedDimensions: true
+    }, seedProducts)
+      .slice(0, 5)
+      .map((candidate) => candidate.id);
+  }
+
+  return alternatives;
+}
+
 function totalForItems(items: LayoutItem[], products: CatalogProduct[]): number {
   const productById = new Map(products.map((product) => [product.id, product]));
 
   return items.reduce((total, item) => total + (productById.get(item.productId)?.priceCents ?? 0), 0);
 }
-

@@ -18,7 +18,7 @@ export interface LayoutValidationResult {
   warnings: LayoutWarning[];
 }
 
-const nonBlockingCategories = new Set<ProductCategory>(["rug", "wall_art", "curtains"]);
+const nonBlockingCategories = new Set<ProductCategory>(["rug", "wall_art", "curtains", "lamp"]);
 
 function isBlocking(product: CatalogProduct): boolean {
   return !nonBlockingCategories.has(product.category);
@@ -131,4 +131,3 @@ export function scoreBudget(totalPriceCents: number, budgetCents: number): numbe
   const overageRatio = (totalPriceCents - budgetCents) / budgetCents;
   return Math.max(0, Number((1 - overageRatio).toFixed(2)));
 }
-
